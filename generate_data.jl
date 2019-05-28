@@ -8,16 +8,16 @@ end
 let
   N = 3
   nelem = 1
-  dim = 2
   T = Float64
+  dim = 3
 
-  io = open("data2d.vtu", "w")
+  io = open("data$(dim)d.vtu", "w")
   Nq = N+1
-  Nqk = dim == 2 ? 1 : Nq
-  Np = Nq * Nq * Nqk
   (r, _) = GaussQuadrature.legendre(T, Nq, GaussQuadrature.both)
-  s = copy(r)
-  t = [0]
+  s = r
+  t = dim == 2 ? [0] : r
+  Nqk = length(t)
+  Np = Nq * Nq * Nqk
 
 
   x = Array{T, 4}(undef, Nq, Nq, Nqk, nelem)
@@ -108,11 +108,117 @@ let
         j != Nq-1 && @printf(io, "\n")
       end
       @printf(io, "\n")
-    # elseif dim == 3
+    elseif dim == 3
       # corners
+      @printf(io, "           %d %d %d %d %d %d %d %d\n",
+              o + L[1, 1, 1],
+              o + L[end, 1, 1],
+              o + L[end, end, 1],
+              o + L[1, end, 1],
+              o + L[1, 1, end],
+              o + L[end, 1, end],
+              o + L[end, end, end],
+              o + L[1, end, end])
       # edges
+      @printf(io, "          ")
+      for n = 2:Nq-1
+        @printf(io, " %d", o + L[n, 1, 1])
+      end
+      @printf(io, "\n")
+      @printf(io, "          ")
+      for n = 2:Nq-1
+        @printf(io, " %d", o + L[end, n, 1])
+      end
+      @printf(io, "\n")
+      @printf(io, "          ")
+      for n = 2:Nq-1
+        @printf(io, " %d", o + L[n, end, 1])
+      end
+      @printf(io, "\n")
+      @printf(io, "          ")
+      for n = 2:Nq-1
+        @printf(io, " %d", o + L[1, n, 1])
+      end
+      @printf(io, "\n")
+
+      @printf(io, "          ")
+      for n = 2:Nq-1
+        @printf(io, " %d", o + L[n, 1, end])
+      end
+      @printf(io, "\n")
+      @printf(io, "          ")
+      for n = 2:Nq-1
+        @printf(io, " %d", o + L[end, n, end])
+      end
+      @printf(io, "\n")
+      @printf(io, "          ")
+      for n = 2:Nq-1
+        @printf(io, " %d", o + L[n, end, end])
+      end
+      @printf(io, "\n")
+      @printf(io, "          ")
+      for n = 2:Nq-1
+        @printf(io, " %d", o + L[1, n, end])
+      end
+      @printf(io, "\n")
+
+      @printf(io, "          ")
+      for n = 2:Nq-1
+        @printf(io, " %d", o + L[1, 1, n])
+      end
+      @printf(io, "\n")
+      @printf(io, "          ")
+      for n = 2:Nq-1
+        @printf(io, " %d", o + L[end, 1, n])
+      end
+      @printf(io, "\n")
+      @printf(io, "          ")
+      for n = 2:Nq-1
+        @printf(io, " %d", o + L[1, end, n])
+      end
+      @printf(io, "\n")
+      @printf(io, "          ")
+      for n = 2:Nq-1
+        @printf(io, " %d", o + L[end, end, n])
+      end
+      @printf(io, "\n")
       # faces
+      @printf(io, "          ")
+      for m = 2:Nq-1, n = 2:Nq-1
+        @printf(io, " %d", o + L[1, n, m])
+      end
+      @printf(io, "\n")
+      @printf(io, "          ")
+      for m = 2:Nq-1, n = 2:Nq-1
+        @printf(io, " %d", o + L[end, n, m])
+      end
+      @printf(io, "\n")
+      @printf(io, "          ")
+      for m = 2:Nq-1, n = 2:Nq-1
+        @printf(io, " %d", o + L[n, 1, m])
+      end
+      @printf(io, "\n")
+      @printf(io, "          ")
+      for m = 2:Nq-1, n = 2:Nq-1
+        @printf(io, " %d", o + L[n, end, m])
+      end
+      @printf(io, "\n")
+      @printf(io, "          ")
+      for m = 2:Nq-1, n = 2:Nq-1
+        @printf(io, " %d", o + L[n, m, 1])
+      end
+      @printf(io, "\n")
+      @printf(io, "          ")
+      for m = 2:Nq-1, n = 2:Nq-1
+        @printf(io, " %d", o + L[n, m, end])
+      end
+      @printf(io, "\n")
       # interior
+      @printf(io, "          ")
+      for k = 2:Nq-1, j = 2:Nq-1, i = 2:Nq-1
+        @printf(io, " %d", o + L[i, j, k])
+      end
+      @printf(io, "\n")
     else
       error("invalid dim")
     end
@@ -135,6 +241,10 @@ let
   if dim == 2
     for e = 1:nelem
       @printf(io, "           70\n")
+    end
+  elseif dim == 3
+    for e = 1:nelem
+      @printf(io, "           72\n")
     end
   else
     error("invalid dim")
