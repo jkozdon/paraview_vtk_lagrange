@@ -7,9 +7,9 @@ end
 
 let
   N = 3
-  nelem = 1
+  nelem = 4
   T = Float64
-  dim = 3
+  dim = 2
 
   io = open("data$(dim)d.vtu", "w")
   Nq = N+1
@@ -25,11 +25,15 @@ let
   z = Array{T, 4}(undef, Nq, Nq, Nqk, nelem)
 
   for e = 1:nelem, k = 1:Nqk, j = 1:Nq, i = 1:Nq
-    x[i, j, k, e], y[i, j, k, e], z[i, j, k, e] = r[i], s[j], t[k]
+    xoffset = 2e - 1 - nelem
+    x[i, j, k, e], y[i, j, k, e], z[i, j, k, e] = r[i]-xoffset, s[j], t[k]
   end
-  # z = sin.(π * x) .* cos.(π * y) .* cos.(π * z)
-  d = exp.(-hypot.(x, y, z)*10)
-
+  if dim == 2
+    x, y = x + sin.(π * y) / 5, y + exp.(-x.^2)
+  else
+    x, y, z = x + sin.(π * y) / 5, y + exp.(-hypot.(x, z).^2), z + sin.(π * x) / 5
+  end
+  d = exp.(sin.(hypot.(x, y, x)))
 
   write(io,
         """
