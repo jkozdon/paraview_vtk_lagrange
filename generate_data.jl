@@ -6,10 +6,10 @@ catch
 end
 
 let
-  N = 3
+  N = 7
   nelem = 4
   T = Float64
-  dim = 2
+  dim = 3
 
   io = open("data$(dim)d.vtu", "w")
   Nq = N+1
@@ -42,6 +42,15 @@ let
           <UnstructuredGrid>
             <Piece NumberOfPoints="$(Np * nelem)" NumberOfCells="$nelem">
               <PointData>
+                <DataArray type="Float32" Name="element_number" format="ascii">
+        """
+       )
+  for n = 1:length(d)
+    @printf(io, "           %16e\n", div(n-1, Np))
+  end
+  write(io,
+        """
+                </DataArray>
                 <DataArray type="Float32" Name="data" format="ascii">
         """
        )
