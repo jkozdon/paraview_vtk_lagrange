@@ -131,5 +131,5 @@ np_do = dsa.WrapDataObject(pdo)
 for fldname in np_di.PointData.keys():
     print(fldname)
     fld = copy(np_di.PointData[fldname])
-    interpolate(Nq, Nqk, r, w, fld, tmp, size(fld) / (Nq * Nq * Nqk))
+    interpolate(Nq, Nqk, r, w, fld, tmp, int(size(fld) / (Nq * Nq * Nqk)))
     np_do.PointData.append(fld, fldname)
