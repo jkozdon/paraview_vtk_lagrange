@@ -64,7 +64,7 @@ end
 
 
 let
-  N = 7
+  N = 5
   nelem = 4
   T = Float64
   dim = 3
